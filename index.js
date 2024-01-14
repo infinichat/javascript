@@ -70,6 +70,7 @@ console.info("Listening for events...");
 
 CrispClient.on("message:received", function (message) {
   console.info("[WebSockets] Got 'message:received' event:", message);
+  console.info("Sending message to a client")
   socket.emit("send_message", message.content, message.session_id);
 })
   .then(function () {
