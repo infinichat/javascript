@@ -64,14 +64,14 @@ console.info("Authenticating...");
 
 CrispClient.authenticateTier("plugin", TOKEN.identifier, TOKEN.key);
 CrispClient.setRtmMode(Crisp.RTM_MODES.WebSockets);
-const socket = io("https://coral-app-dg5yg.ondigitalocean.app/");
+const socket = io("http://127.0.0.1:5000");
 
 console.info("Listening for events...");
 
 CrispClient.on("message:received", function (message) {
   console.info("[WebSockets] Got 'message:received' event:", message);
   console.info("Sending message to a client")
-  socket.emit("send_message", message.content, message.session_id);
+  socket.emit("send_message", message.content, message.session_id, message.fingerprint);
 })
   .then(function () {
     console.error("[WebSockets] Requested to listen to sent messages");
@@ -90,33 +90,33 @@ CrispClient.on("message:received", function (message) {
 //     console.error("[WebSockets] Failed listening to sent messages:", error);
 //   });
 
-// CrispClient.on("message:updated", function (message) {
-//   console.info("[WebSockets] Got 'message:updated' event:", message);
-//   socket.emit("edit_message", message.content, message.fingerprint);
-// })
-//   .then(function () {
-//     console.error("[WebSockets] Requested to listen to sent messages");
-//   })
-//   .catch(function (error) {
-//     console.error("[WebSockets] Failed listening to sent messages:", error);
-//   });
+CrispClient.on("message:updated", function (message) {
+  console.info("[WebSockets] Got 'message:updated' event:", message);
+  socket.emit("edit_message", message.content, message.fingerprint);
+})
+  .then(function () {
+    console.error("[WebSockets] Requested to listen to sent messages");
+  })
+  .catch(function (error) {
+    console.error("[WebSockets] Failed listening to sent messages:", error);
+  });
 
-// CrispClient.on("message:removed", function (message) {
-//   console.info("[WebSockets] Got 'message:removed' event:", message);
+CrispClient.on("message:removed", function (message) {
+  console.info("[WebSockets] Got 'message:removed' event:", message);
 
-//   // Log the fingerprint or relevant content
-//   console.log(
-//     "[WebSockets] Fingerprint or relevant content:",
-//     message.fingerprint
-//   ); // Replace 'fingerprint' with the actual property name
+  // Log the fingerprint or relevant content
+  console.log(
+    "[WebSockets] Fingerprint or relevant content:",
+    message.fingerprint
+  ); // Replace 'fingerprint' with the actual property name
 
-//   socket.emit("message_to_delete", message.fingerprint);
+  socket.emit("message_to_delete", message.fingerprint, message.session_id);
 
-//   // WebSocket.emit('delete_message', )
-// })
-//   .then(function () {
-//     console.error("[WebSockets] Requested to listen to received messages");
-//   })
-//   .catch(function (error) {
-//     console.error("[WebSockets] Failed listening to received messages:", error);
-//   });
+  // WebSocket.emit('delete_message', )
+})
+  .then(function () {
+    console.error("[WebSockets] Requested to listen to received messages");
+  })
+  .catch(function (error) {
+    console.error("[WebSockets] Failed listening to received messages:", error);
+  });
