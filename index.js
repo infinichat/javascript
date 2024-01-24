@@ -22,7 +22,7 @@ console.info("Authenticating...");
 
 CrispClient.authenticateTier("plugin", TOKEN.identifier, TOKEN.key);
 CrispClient.setRtmMode(Crisp.RTM_MODES.WebSockets);
-const socket = io("http://159.223.195.100");
+const socket = io("http://167.99.243.140");
 
 console.info("Listening for events...");
 
